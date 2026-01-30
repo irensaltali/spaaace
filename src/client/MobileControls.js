@@ -1,4 +1,4 @@
-import EventEmitter from 'event-emitter';
+import { EventEmitter } from 'eventemitter3';
 import Utils from '../common/Utils';
 
 /**

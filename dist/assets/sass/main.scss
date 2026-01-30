@@ -40,7 +40,7 @@ html,body{
 	width: 30px;
 	height: 30px;
 	opacity: 0;
-	background-image: url('assets/icons/offscreenIndicator.svg');
+	background-image: url('../icons/offscreenIndicator.svg');
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -84,7 +84,7 @@ button{
 		top: -2.4rem;
 		width: 6rem;
 		height: 7rem;
-		background-image: url(assets/images/cta_glow_left.png);
+		background-image: url(../images/cta_glow_left.png);
 		background-repeat: no-repeat;
 		background-position: top;
 		background-size: auto;
@@ -99,7 +99,7 @@ button{
 		top: -2.4rem;
 		width: 6rem;
 		height: 7rem;
-		background-image: url(assets/images/cta_glow_left.png);
+		background-image: url(../images/cta_glow_left.png);
 		background-repeat: no-repeat;
 		background-position: top;
 		background-size: auto;
@@ -238,13 +238,13 @@ button{
 	&:after{
 		width: 103px;
 		height: 91px;
-		background-image: url("assets/images/pc_keys.png");
+		background-image: url("../images/pc_keys.png");
 	}
 
 	&:before{
 		width: 175px;
 		height: 55px;
-		background-image: url("assets/images/pc_space.png");
+		background-image: url("../images/pc_space.png");
 	}
 }
 
@@ -252,13 +252,13 @@ button{
 	&:after{
 		width: 119px;
 		height: 64px;
-		background-image: url("assets/images/mac_keys.png");
+		background-image: url("../images/mac_keys.png");
 	}
 
 	&:before{
 		width: 193px;
 		height: 64px;
-		background-image: url("assets/images/mac_space.png");
+		background-image: url("../images/mac_space.png");
 	}
 }
 
