@@ -1,9 +1,9 @@
 node_modules
-dist/bundle.js
 .idea/*
 
 *.trace
 yarn.lock
 
+# Build outputs
 dist/*
 dist-server/*

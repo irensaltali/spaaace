@@ -84,9 +84,11 @@ const NUM_BOTS = 3;  // Change to 0 to disable bots
 ├── src/
 │   ├── client/          # Browser-side code
 │   ├── server/          # Node.js server code
-│   └── common/          # Shared game logic
-├── dist/                # Client build output (static files)
-├── dist-server/         # Server build output
+│   ├── common/          # Shared game logic
+│   ├── assets/          # Static assets (images, audio, scss)
+│   └── index.html       # HTML template
+├── dist/                # Client build output (generated)
+├── dist-server/         # Server build output (generated)
 └── package.json
 ```
 

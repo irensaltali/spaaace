@@ -44,10 +44,11 @@
 │       ├── Ship.js                # Ship game object
 │       ├── Missile.js             # Missile game object
 │       └── Utils.js               # Utility functions
-├── dist/                     # Client build output (served as static files)
-│   ├── index.html            # Main HTML page
-│   └── assets/               # Game assets (images, audio, scss)
-├── dist-server/              # Server build output (Node.js runnable)
+├── src/
+│   ├── assets/               # Source assets (images, audio, scss)
+│   └── index.html            # HTML template
+├── dist/                     # Client build output (generated, served as static files)
+├── dist-server/              # Server build output (generated, Node.js runnable)
 ├── scripts/                  # Deployment scripts
 │   ├── npm-install.sh        # AWS CodeDeploy install hook
 │   └── npm-start.sh          # AWS CodeDeploy start hook

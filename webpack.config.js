@@ -1,14 +1,24 @@
 const path = require('path');
 const fs = require('fs');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'development',
     entry: './src/client/clientEntryPoint.js',
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        clean: true // Clean dist/ before each build
     },
     devtool: 'source-map',
+    plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'src/index.html', to: 'index.html' },
+                { from: 'src/assets', to: 'assets' }
+            ]
+        })
+    ],
     module: {
         rules: [
             {
@@ -24,7 +34,7 @@ module.exports = {
                         loader: 'sass-loader',
                         options: {
                             sassOptions: {
-                                includePaths: [path.resolve(__dirname, 'dist/assets')]
+                                includePaths: [path.resolve(__dirname, 'src/assets')]
                             }
                         }
                     }
@@ -44,7 +54,7 @@ module.exports = {
                     }
                 }
             },
-            // Asset modules for webpack 5 (replaces file-loader, url-loader, raw-loader)
+            // Asset modules for webpack 5
             {
                 test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf|otf|mp3|wav)$/,
                 type: 'asset/resource'
@@ -57,7 +67,6 @@ module.exports = {
     },
     resolve: {
         fallback: {
-            // Polyfills for node.js core modules used by lance-gg and pixi.js
             "http": require.resolve("stream-http"),
             "https": require.resolve("https-browserify"),
             "url": require.resolve("url/"),
