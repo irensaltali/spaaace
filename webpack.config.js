@@ -34,8 +34,11 @@ module.exports = {
                         loader: 'sass-loader',
                         options: {
                             sassOptions: {
-                                includePaths: [path.resolve(__dirname, 'src/assets')]
-                            }
+                                includePaths: [path.resolve(__dirname, 'src/assets')],
+                                quietDeps: true,
+                                silenceDeprecations: ['import', 'global-builtin', 'call-string', 'elseif', 'function']
+                            },
+                            warnRuleAsWarning: false
                         }
                     }
                 ]
