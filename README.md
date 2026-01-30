@@ -72,11 +72,11 @@ const NUM_BOTS = 3;  // Change to 0 to disable bots
 ## Technology Stack
 
 - **Runtime**: Node.js (>=18.0.0)
-- **Game Framework**: [lance-gg](https://www.npmjs.com/package/lance-gg) v4.0.8
-- **Server**: Express.js v4.21.2 + Socket.IO v2.5.1
+- **Game Framework**: [lance-gg](https://www.npmjs.com/package/lance-gg) v4.0.9
+- **Server**: Express.js v4.22.1 + Socket.IO v2.5.1
 - **Client Rendering**: Pixi.js v4.8.9 + pixi-particles
 - **Audio**: Howler.js v2.2.4
-- **Build Tools**: Webpack 5 + Babel 7 + Sass
+- **Build Tools**: Webpack 5.104 + Babel 7.28 + Sass 1.97
 
 ## Project Structure
 

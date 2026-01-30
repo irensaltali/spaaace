@@ -4,7 +4,7 @@
 
 **Spaaace** is an HTML5 multiplayer space shooter game built with the [Lance](http://lance.gg) game server framework. It is a real-time browser-based game where players control spaceships, shoot missiles at each other, and compete for kills.
 
-- **Repository**: https://github.com/lance-gg/spaaace
+- **Repository**: https://github.com/irensaltali/spaaace
 - **Version**: 4.0.0
 - **License**: Apache-2.0
 - **Live Demo**: http://spaaace.herokuapp.com
@@ -17,9 +17,9 @@
 - **Client Rendering**: Pixi.js (v4.8.9) for 2D graphics, pixi-particles for effects
 - **Audio**: Howler.js (v2.2.4)
 - **Build Tools**: 
-  - Webpack 5 (client bundling)
-  - Babel 7 (ES6+ transpilation)
-  - sass (Dart Sass - SCSS compilation)
+  - Webpack 5.104 (client bundling)
+  - Babel 7.28 (ES6+ transpilation)
+  - sass 1.97 (Dart Sass - SCSS compilation)
 - **Code Quality**: ESLint with recommended config
 
 ## Project Structure
