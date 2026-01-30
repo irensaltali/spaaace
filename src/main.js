@@ -22,7 +22,8 @@ const gameEngine = new SpaaaceGameEngine({ traceLevel: Lib.Trace.TRACE_NONE });
 const serverEngine = new SpaaaceServerEngine(io, gameEngine, {
     debug: {},
     updateRate: 6,
-    timeoutInterval: 0 // no timeout
+    timeoutInterval: 0, // no timeout
+    countConnections: false // disable lance.gg telemetry
 });
 
 // start the game

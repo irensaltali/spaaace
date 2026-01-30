@@ -30,7 +30,9 @@ var gameEngine = new _SpaaaceGameEngine["default"]({
 var serverEngine = new _SpaaaceServerEngine["default"](io, gameEngine, {
   debug: {},
   updateRate: 6,
-  timeoutInterval: 0 // no timeout
+  timeoutInterval: 0,
+  // no timeout
+  countConnections: false // disable lance.gg telemetry
 });
 
 // start the game
