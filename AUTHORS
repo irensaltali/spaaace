@@ -1,5 +1,14 @@
-"weird laser gun" by Chocobaggy
-This work is licensed under the Attribution License.
+Original Game:
+  Opher Vishnia - Original author
+  https://github.com/lance-gg/spaaace
 
-"Projectile Hit" by unfa
-This work is licensed under the Attribution License.
+Audio Assets:
+  "weird laser gun" by Chocobaggy
+  This work is licensed under the Attribution License.
+
+  "Projectile Hit" by unfa
+  This work is licensed under the Attribution License.
+
+Updates & Modernization:
+  irensaltali - Updated dependencies, migrated to modern Node.js/Webpack,
+                removed external dependencies, disabled telemetry
