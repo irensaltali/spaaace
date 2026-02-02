@@ -8,12 +8,6 @@ on:
     paths-ignore:
       - '**.md'
       - '.gitignore'
-  pull_request:
-    branches:
-      - master
-      - develop
-    paths-ignore:
-      - '**.md'
 
 jobs:
   # Determine environment based on branch
