@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+.github
+.eslintrc.js
+webpack.config.js
+babel.config.js
+scripts
+appspec.yml
+dist-server  # We'll rebuild this in container
+# Keep dist/ for the built frontend assets
