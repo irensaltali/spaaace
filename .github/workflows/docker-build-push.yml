@@ -1,0 +1,181 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - master      # Production
+      - develop     # Staging
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  # Determine environment based on branch
+  setup:
+    name: Determine Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+      region: ${{ steps.set-env.outputs.region }}
+      domain: ${{ steps.set-env.outputs.domain }}
+      ecr_repository: ${{ steps.set-env.outputs.ecr_repository }}
+    steps:
+      - name: Set environment variables
+        id: set-env
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          
+          if [[ "$BRANCH" == "master" ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "region=eu-north-1" >> $GITHUB_OUTPUT
+            echo "domain=spaaace.online" >> $GITHUB_OUTPUT
+            echo "ecr_repository=spaaace-prod-game" >> $GITHUB_OUTPUT
+          elif [[ "$BRANCH" == "develop" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "region=eu-west-1" >> $GITHUB_OUTPUT
+            echo "domain=staging.spaaace.online" >> $GITHUB_OUTPUT
+            echo "ecr_repository=spaaace-staging-game" >> $GITHUB_OUTPUT
+          else
+            echo "Unknown branch: $BRANCH"
+            exit 1
+          fi
+          
+          echo "Building for environment: ${{ steps.set-env.outputs.environment }}"
+          echo "AWS Region: ${{ steps.set-env.outputs.region }}"
+          echo "Domain: ${{ steps.set-env.outputs.domain }}"
+
+  build-and-push:
+    name: Build and Push to ECR
+    runs-on: ubuntu-latest
+    needs: setup
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ needs.setup.outputs.region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata
+        id: meta
+        run: |
+          ENVIRONMENT="${{ needs.setup.outputs.environment }}"
+          IMAGE_TAG="${{ github.sha }}"
+          IMAGE_TAG_SHORT="$(echo ${{ github.sha }} | cut -c1-7)"
+          
+          # Full ECR repository name
+          ECR_REPOSITORY="${{ steps.login-ecr.outputs.registry }}/${{ needs.setup.outputs.ecr_repository }}"
+          
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image_tag_short=$IMAGE_TAG_SHORT" >> $GITHUB_OUTPUT
+          echo "ecr_repository=$ECR_REPOSITORY" >> $GITHUB_OUTPUT
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          
+          echo "Building for environment: $ENVIRONMENT"
+          echo "Image tag: $IMAGE_TAG"
+          echo "ECR Repository: $ECR_REPOSITORY"
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: |
+            spaaace-game:${{ github.sha }}
+            spaaace-game:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+
+      - name: Test Docker image
+        run: |
+          # Start container and test health endpoint
+          docker run -d --name test-container -p 3000:3000 spaaace-game:${{ github.sha }}
+          
+          # Wait for container to start
+          sleep 30
+          
+          # Test health endpoint
+          curl -f http://localhost:3000/ || exit 1
+          
+          # Cleanup
+          docker stop test-container
+          docker rm test-container
+
+      - name: Push to Amazon ECR
+        if: github.event_name == 'push'
+        run: |
+          ECR_REPOSITORY="${{ steps.meta.outputs.ecr_repository }}"
+          IMAGE_TAG="${{ steps.meta.outputs.image_tag }}"
+          IMAGE_TAG_SHORT="${{ steps.meta.outputs.image_tag_short }}"
+          ENVIRONMENT="${{ steps.meta.outputs.environment }}"
+          
+          # Tag with commit SHA
+          docker tag spaaace-game:${{ github.sha }} $ECR_REPOSITORY:$IMAGE_TAG
+          docker tag spaaace-game:${{ github.sha }} $ECR_REPOSITORY:$IMAGE_TAG_SHORT
+          docker tag spaaace-game:${{ github.sha }} $ECR_REPOSITORY:latest
+          
+          # Also tag with environment name for clarity
+          docker tag spaaace-game:${{ github.sha }} $ECR_REPOSITORY:$ENVIRONMENT
+          
+          # Push all tags
+          docker push $ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REPOSITORY:$IMAGE_TAG_SHORT
+          docker push $ECR_REPOSITORY:latest
+          docker push $ECR_REPOSITORY:$ENVIRONMENT
+          
+          echo "Pushed image: $ECR_REPOSITORY:$IMAGE_TAG"
+          echo "Environment: $ENVIRONMENT"
+
+      - name: Output image details
+        if: github.event_name == 'push'
+        run: |
+          echo "=== Build Summary ==="
+          echo "Environment: ${{ steps.meta.outputs.environment }}"
+          echo "AWS Region: ${{ needs.setup.outputs.region }}"
+          echo "Domain: ${{ needs.setup.outputs.domain }}"
+          echo "ECR Repository: ${{ steps.meta.outputs.ecr_repository }}"
+          echo "Tags: ${{ steps.meta.outputs.image_tag }}, ${{ steps.meta.outputs.image_tag_short }}, latest, ${{ steps.meta.outputs.environment }}"
+          echo "Full image URI: ${{ steps.meta.outputs.ecr_repository }}:${{ steps.meta.outputs.image_tag }}"
+
+      - name: Trigger deployment in spaaace-tf repo
+        if: github.event_name == 'push'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.TF_REPO_PAT }}
+          repository: irensaltali/spaaace-tf
+          event-type: deploy-game
+          client-payload: |
+            {
+              "environment": "${{ steps.meta.outputs.environment }}",
+              "region": "${{ needs.setup.outputs.region }}",
+              "domain": "${{ needs.setup.outputs.domain }}",
+              "image_tag": "${{ steps.meta.outputs.image_tag }}",
+              "image_uri": "${{ steps.meta.outputs.ecr_repository }}:${{ steps.meta.outputs.image_tag }}",
+              "ecr_repository": "${{ needs.setup.outputs.ecr_repository }}",
+              "commit_sha": "${{ github.sha }}",
+              "commit_message": "${{ github.event.head_commit.message }}",
+              "branch": "${{ github.ref_name }}"
+            }
