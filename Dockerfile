@@ -2,13 +2,16 @@
 # Stage 1: Build the application
 FROM node:18-alpine AS builder
 
+# Install build dependencies for native modules (e.g., bufferutil via node-gyp)
+RUN apk add --no-cache python3 make g++
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
 # Install ALL dependencies (including devDependencies for build)
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # Copy source files
 COPY . .

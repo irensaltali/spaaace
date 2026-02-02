@@ -7,8 +7,6 @@ Dockerfile
 .dockerignore
 .github
 .eslintrc.js
-webpack.config.js
-babel.config.js
 scripts
 appspec.yml
 dist-server  # We'll rebuild this in container
