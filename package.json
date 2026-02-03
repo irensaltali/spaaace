@@ -8,6 +8,7 @@
   "main": "src/main.js",
   "dependencies": {
     "breakpoint-sass": "^3.0.0",
+    "cors": "^2.8.5",
     "buffer": "^6.0.3",
     "css-loader": "^7.1.2",
     "eventemitter3": "^5.0.1",

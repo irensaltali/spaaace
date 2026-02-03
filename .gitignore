@@ -7,3 +7,5 @@ yarn.lock
 # Build outputs
 dist/*
 dist-server/*
+
+.DS_Store
