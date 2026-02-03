@@ -170,6 +170,6 @@ jobs:
               "image_uri": "${{ steps.meta.outputs.ecr_repository }}:${{ steps.meta.outputs.image_tag }}",
               "ecr_repository": "${{ needs.setup.outputs.ecr_repository }}",
               "commit_sha": "${{ github.sha }}",
-              "commit_message": "${{ github.event.head_commit.message }}",
+              "commit_message": ${{ toJSON(github.event.head_commit.message) }},
               "branch": "${{ github.ref_name }}"
             }
