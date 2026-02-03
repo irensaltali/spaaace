@@ -10,6 +10,7 @@ const defaults = {
     traceLevel: Lib.Trace.TRACE_NONE,
     delayInputCount: 8,
     scheduler: 'render-schedule',
+    serverURL: 'https://game.staging.spaaace.online',
     syncOptions: {
         sync: qsOptions.sync || 'extrapolate',
         localObjBending: 0.2,
